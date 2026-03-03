@@ -35,3 +35,6 @@ uploads/
 
 # Environment variables
 .env
+
+instance/
+

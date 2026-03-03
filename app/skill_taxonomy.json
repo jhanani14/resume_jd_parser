@@ -1,0 +1,58 @@
+{
+  "Python": {
+    "level": "High",
+    "resources": ["OOP Concepts", "Data Structures", "Advanced Python Programming"]
+  },
+  "Flask": {
+    "level": "Medium",
+    "resources": ["Routing", "Blueprints", "REST API Development"]
+  },
+  "FastAPI": {
+    "level": "Medium",
+    "resources": ["Async APIs", "Pydantic Models", "Dependency Injection"]
+  },
+  "Machine Learning": {
+    "level": "High",
+    "resources": ["Supervised Learning", "Model Evaluation", "Scikit-learn"]
+  },
+  "NLP": {
+    "level": "High",
+    "resources": ["spaCy", "NLTK", "Text Preprocessing Techniques"]
+  },
+  "AWS": {
+    "level": "High",
+    "resources": ["EC2", "S3", "Lambda", "IAM"]
+  },
+  "Docker": {
+    "level": "Medium",
+    "resources": ["Containerization Basics", "Docker Compose", "Image Optimization"]
+  },
+  "Kubernetes": {
+    "level": "High",
+    "resources": ["Pods", "Services", "Deployments"]
+  },
+  "MongoDB": {
+    "level": "Medium",
+    "resources": ["CRUD Operations", "Aggregation Framework", "Indexing"]
+  },
+  "MySQL": {
+    "level": "Medium",
+    "resources": ["Joins", "Indexing", "Query Optimization"]
+  },
+  "React": {
+    "level": "Medium",
+    "resources": ["Hooks", "State Management", "Component Lifecycle"]
+  },
+  "Git": {
+    "level": "High",
+    "resources": ["Branching", "Merging", "Version Control Best Practices"]
+  },
+  "Pandas": {
+    "level": "Medium",
+    "resources": ["Data Cleaning", "DataFrames", "Data Analysis"]
+  },
+  "NumPy": {
+    "level": "Medium",
+    "resources": ["Arrays", "Linear Algebra", "Vectorization"]
+  }
+}
