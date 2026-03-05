@@ -1,84 +1,375 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Results</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+{% extends "base.html" %}
 
-<div class="container mt-5">
+{% block title %}Analysis Results - Resume JD Matcher{% endblock %}
 
-    <h2 class="text-center mb-4">Analysis Results</h2>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-body text-center">
-            <h3>{{ score }}% Match</h3>
+{% block content %}
+<div class="container">
+    
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <h1 class="mb-2">
+                <i class="fas fa-chart-pie me-3" style="color: #2563eb;"></i>Analysis Results
+            </h1>
+            <p class="lead text-muted">Your resume alignment with the job description</p>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-5">
+        <div class="col-lg-6 offset-lg-3">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+                    <canvas id="matchScoreChart" width="200" height="200" style="max-width: 250px; margin: 0 auto;"></canvas>
+                    <h3 class="mt-4 mb-2">Overall Match Score</h3>
+                    <p class="text-muted">Your resume alignment with the job description</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-success text-white">
-                    Matched Skills
+    
+    <div class="row mb-5">
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="metric-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="metric-value">{{ accuracy }}%</div>
+                <div class="metric-label">Accuracy Score</div>
+                <small>Matched / Total JD skills</small>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="metric-value">{{ resume_skills_count }}</div>
+                <div class="metric-label">Your Skills</div>
+                <small>Skills in your resume</small>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="metric-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <div class="metric-value">{{ jd_skills_count }}</div>
+                <div class="metric-label">Required Skills</div>
+                <small>Skills in the job post</small>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="metric-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <div class="metric-value">{{ matched_skills_count }}</div>
+                <div class="metric-label">Matched</div>
+                <small>Skills you have & job needs</small>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="metric-card" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #1f2937;">
+                <div class="metric-value">{{ resume_cleaning_pct }}%</div>
+                <div class="metric-label">Resume Cleaned</div>
+                <small>Non-essential text removed</small>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="metric-card" style="background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%);">
+                <div class="metric-value">{{ jd_cleaning_pct }}%</div>
+                <div class="metric-label">JD Cleaned</div>
+                <small>Non-essential text removed</small>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="metric-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="metric-value">{{ missing_skills_count }}</div>
+                <div class="metric-label">To Learn</div>
+                <small>Missing from your resume</small>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card shadow-md border-0">
+                <div class="card-header bg-warning">
+                    <i class="fas fa-chart-bar me-2"></i>Skills Gap Analysis
                 </div>
                 <div class="card-body">
-                    {% for skill in matched %}
-                        <span class="badge bg-success m-1">{{ skill }}</span>
-                    {% endfor %}
+                    <canvas id="skillsGapChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-md border-0">
+                <div class="card-header bg-success">
+                    <i class="fas fa-check-circle me-2"></i>Matched Skills ({{ matched_skills_count }})
+                </div>
+                <div class="card-body">
+                    {% if matched %}
+                        <div class="d-flex flex-wrap">
+                            {% for skill in matched %}
+                                <span class="badge badge-success">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-info-circle me-2"></i>No matched skills found yet
+                        </p>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-danger text-white">
-                    Missing Skills
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-md border-0">
+                <div class="card-header bg-danger">
+                    <i class="fas fa-times-circle me-2"></i>Missing Skills ({{ missing_skills_count }})
                 </div>
                 <div class="card-body">
-                    {% for skill in missing %}
-                        <span class="badge bg-danger m-1">{{ skill }}</span>
-                    {% endfor %}
+                    {% if missing %}
+                        <div class="d-flex flex-wrap">
+                            {% for skill in missing %}
+                                <span class="badge badge-danger">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success mb-0">
+                            <i class="fas fa-star me-2"></i>
+                            <strong>Excellent!</strong> You have all required skills
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if missing_skills_count > 0 %}
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <i class="fas fa-graduation-cap me-2"></i>Personalized Learning Path ({{ missing_skills_count }} Skills to Master)
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Recommended Timeline:</strong> Master one skill every 2-4 weeks for optimal learning
+                    </div>
+
+                    {% if recommendations %}
+                        {% set ns = namespace(counter=1) %}
+                        {% for skill, resources in recommendations.items() %}
+                        <div class="learning-step mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="badge bg-primary me-3" style="font-size: 1rem; padding: 10px 15px;">Step {{ ns.counter }}</span>
+                                <h5 class="mb-0" style="color: #2563eb;">{{ skill }}</h5>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold mb-2">
+                                        <i class="fas fa-book me-2" style="color: #2563eb;"></i>Learning Resources
+                                    </h6>
+                                    {% if resources %}
+                                        <ul class="small mb-0" style="margin-left: 1.5rem;">
+                                            {% for item in resources %}
+                                                <li class="mb-2">
+                                                    <strong>{{ item.split(':')[0] if ':' in item else item }}</strong>
+                                                    {% if ':' in item %}<br/><small class="text-muted">{{ item.split(':', 1)[1].strip() }}</small>{% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="text-muted small"><em>Try Udemy, Coursera, LinkedIn Learning, or YouTube</em></p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold mb-2">
+                                        <i class="fas fa-tasks me-2" style="color: #10b981;"></i>Suggested Practice
+                                    </h6>
+                                    <ul class="small mb-0" style="margin-left: 1.5rem;">
+                                        <li class="mb-2">Complete beginner course (1-2 weeks)</li>
+                                        <li class="mb-2">Build a project (2 weeks)</li>
+                                        <li class="mb-0">Share work on GitHub (1 week)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% set ns.counter = ns.counter + 1 %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Use popular online platforms to learn these skills</p>
+                    {% endif %}
+
+                    <div class="alert alert-success mt-4 mb-0" role="alert">
+                        <strong><i class="fas fa-star me-2"></i>Pro Tips:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Join online communities (Reddit, Discord) to connect</li>
+                            <li>Work on real-world projects for practical experience</li>
+                            <li>30 mins daily is better than 3 hours on weekends</li>
+                            <li>Document your journey on LinkedIn or a blog</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="alert alert-success alert-lg" role="alert">
+                <i class="fas fa-trophy me-2" style="font-size: 1.5rem;"></i>
+                <h5 class="mb-2"><strong>Perfect Match! 🎉</strong></h5>
+                <p class="mb-0">You have all the required skills. Consider enhancing expertise with advanced topics.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mb-5">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-info">
+                    <i class="fas fa-magnifying-glass me-2"></i>Preprocessed Resume
+                </div>
+                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <code class="small text-dark">{{ cleaned_resume }}</code>
                 </div>
             </div>
         </div>
 
-    </div>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-info text-white">
-            Learning Recommendations
-        </div>
-        <div class="card-body">
-            {% for skill, resources in recommendations.items() %}
-                <h6>{{ skill }}</h6>
-                <ul>
-                    {% for item in resources %}
-                        <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-            {% endfor %}
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-info">
+                    <i class="fas fa-magnifying-glass me-2"></i>Preprocessed Job Description
+                </div>
+                <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    <code class="small text-dark">{{ cleaned_jd }}</code>
+                </div>
+            </div>
         </div>
     </div>
 
-    <hr class="my-4">
-
-    <h5>Preprocessed Resume Text</h5>
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body" style="max-height:200px; overflow-y:auto;">
-            <small>{{ cleaned_resume }}</small>
+    <div class="row mb-5">
+        <div class="col-lg-12 text-center">
+            <a href="/" class="btn btn-primary btn-lg me-3">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+            <button class="btn btn-success btn-lg" onclick="window.print()">
+                <i class="fas fa-print me-2"></i>Print Results
+            </button>
         </div>
     </div>
-
-    <h5>Preprocessed Job Description Text</h5>
-    <div class="card shadow-sm">
-        <div class="card-body" style="max-height:200px; overflow-y:auto;">
-            <small>{{ cleaned_jd }}</small>
-        </div>
-    </div>
-
 </div>
 
-</body>
-</html>
+
+<script>
+    
+    const matchCtx = document.getElementById('matchScoreChart');
+    if (matchCtx) {
+        new Chart(matchCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Match', 'Remaining'],
+                datasets: [{
+                    data: [{{ score }}, {{ 100 - score }}],
+                    backgroundColor: [
+                        '#2563eb',
+                        '#e5e7eb'
+                    ],
+                    borderColor: ['#1e40af', '#d1d5db'],
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 12, weight: 'bold' },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            },
+            plugins: [{
+                id: 'textCenter',
+                beforeDatasetsDraw(chart) {
+                    const {width, height, ctx} = chart;
+                    ctx.restore();
+                    const fontSize = (height / 200).toFixed(2);
+                    ctx.font = "bold " + fontSize + "em sans-serif";
+                    ctx.textBaseline = "middle";
+                    ctx.fillStyle = "#2563eb";
+                    const text = "{{ score }}%";
+                    const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                    const textY = height / 2;
+                    ctx.fillText(text, textX, textY);
+                    ctx.save();
+                }
+            }]
+        });
+    }
+
+    
+    const gapCtx = document.getElementById('skillsGapChart');
+    if (gapCtx) {
+        new Chart(gapCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Matched', 'Missing', 'Your Skills', 'Required Skills'],
+                datasets: [{
+                    label: 'Skills Count',
+                    data: [{{ matched_skills_count }}, {{ missing_skills_count }}, {{ resume_skills_count }}, {{ jd_skills_count }}],
+                    backgroundColor: [
+                        '#10b981',
+                        '#ef4444',
+                        '#2563eb',
+                        '#f59e0b'
+                    ],
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'x',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { font: { size: 12, weight: '600' } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed.y + ' skills';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

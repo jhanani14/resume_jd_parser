@@ -5,9 +5,6 @@ from . import db
 from flask_login import UserMixin
 
 
-# =========================
-# USER TABLE
-# =========================
 class User(db.Model, UserMixin):
     __tablename__ = "user"
 
@@ -15,7 +12,6 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
-    # Relationship → one user can have many match histories
     matches = db.relationship(
         "MatchHistory",
         backref="user",
@@ -27,9 +23,7 @@ class User(db.Model, UserMixin):
         return f"<User {self.username}>"
 
 
-# =========================
-# MATCH HISTORY TABLE
-# =========================
+
 class MatchHistory(db.Model):
     __tablename__ = "match_history"
 

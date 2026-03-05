@@ -11,9 +11,6 @@ from app.nlp_engine import analyze_resume
 
 main = Blueprint("main", __name__)
 
-# ----------------------------
-# FILE TEXT EXTRACTOR
-# ----------------------------
 def extract_text_from_file(file):
 
     filename = file.filename.lower()
@@ -33,19 +30,10 @@ def extract_text_from_file(file):
         text = file.read().decode("utf-8")
 
     return text
-
-
-# ----------------------------
-# ROOT
-# ----------------------------
 @main.route("/")
 def home():
     return redirect(url_for("auth.login"))
 
-
-# ----------------------------
-# DASHBOARD
-# ----------------------------
 @main.route("/dashboard")
 @login_required
 def dashboard():
@@ -53,11 +41,6 @@ def dashboard():
         "dashboard.html",
         username=current_user.username
     )
-
-
-# ----------------------------
-# ANALYZE
-# ----------------------------
 @main.route("/analyze", methods=["POST"])
 @login_required
 def analyze():
@@ -68,27 +51,25 @@ def analyze():
     resume_file = request.files.get("resume_file")
     jd_file = request.files.get("jd_file")
 
-    # -------- Resume Handling --------
     if resume_file and resume_file.filename != "":
         resume_content = extract_text_from_file(resume_file)
     else:
         resume_content = resume_text or ""
 
-    # -------- JD Handling --------
     if jd_file and jd_file.filename != "":
         jd_content = extract_text_from_file(jd_file)
     else:
         jd_content = jd_text or ""
 
-    # Validation
+
     if not resume_content.strip() or not jd_content.strip():
         flash("Resume and Job Description cannot be empty.", "danger")
         return redirect(url_for("main.dashboard"))
 
-    # NLP Analysis
+    
     results = analyze_resume(resume_content, jd_content)
 
-    # Save to DB
+   
     history = MatchHistory(
         user_id=current_user.id,
         score=results["score"]
@@ -104,5 +85,12 @@ def analyze():
         missing=results["missing_skills"],
         recommendations=results["recommendations"],
         cleaned_resume=results["cleaned_resume"],
-        cleaned_jd=results["cleaned_jd"]
+        cleaned_jd=results["cleaned_jd"],
+        resume_skills_count=results["resume_skills_count"],
+        jd_skills_count=results["jd_skills_count"],
+        matched_skills_count=results["matched_skills_count"],
+        missing_skills_count=results["missing_skills_count"],
+        resume_cleaning_pct=results["resume_cleaning_pct"],
+        jd_cleaning_pct=results["jd_cleaning_pct"],
+        accuracy=results["accuracy"]
     )

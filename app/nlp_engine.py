@@ -6,7 +6,7 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Load Skill Taxonomy
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SKILL_FILE = os.path.join(BASE_DIR, "skill_taxonomy.json")
 
@@ -14,9 +14,6 @@ with open(SKILL_FILE, "r", encoding="utf-8") as f:
     skill_data = json.load(f)
 
 
-# ----------------------------
-# TEXT CLEANING FUNCTION
-# ----------------------------
 def clean_text(text):
     text = text.lower()
     text = re.sub(r"[^a-zA-Z0-9\s]", " ", text)
@@ -24,9 +21,6 @@ def clean_text(text):
     return text.strip()
 
 
-# ----------------------------
-# SKILL EXTRACTION
-# ----------------------------
 def extract_skills(text):
     text_lower = text.lower()
     extracted = []
@@ -38,9 +32,18 @@ def extract_skills(text):
     return list(set(extracted))
 
 
-# ----------------------------
-# SIMILARITY CALCULATION
-# ----------------------------
+
+def calculate_cleaning_percentage(original_text, cleaned_text):
+    """Calculate the percentage of text cleaned/removed"""
+    original_len = len(original_text)
+    cleaned_len = len(cleaned_text)
+    if original_len == 0:
+        return 0
+    cleaning_pct = round(((original_len - cleaned_len) / original_len) * 100, 2)
+    return cleaning_pct
+
+
+
 def calculate_similarity(resume_text, jd_text):
     vectorizer = TfidfVectorizer()
     vectors = vectorizer.fit_transform([resume_text, jd_text])
@@ -48,26 +51,37 @@ def calculate_similarity(resume_text, jd_text):
     return round(score * 100, 2)
 
 
-# ----------------------------
-# MAIN ANALYSIS FUNCTION
-# ----------------------------
+
+def calculate_accuracy(matched_skills, jd_skills):
+    """Calculate accuracy as percentage of matched skills from total JD skills"""
+    if len(jd_skills) == 0:
+        return 0
+    accuracy = round((len(matched_skills) / len(jd_skills)) * 100, 2)
+    return accuracy
+
+
 def analyze_resume(resume_text, jd_text):
 
-    # Clean texts
+    
     cleaned_resume = clean_text(resume_text)
     cleaned_jd = clean_text(jd_text)
 
-    # Extract skills
+    resume_cleaning_pct = calculate_cleaning_percentage(resume_text, cleaned_resume)
+    jd_cleaning_pct = calculate_cleaning_percentage(jd_text, cleaned_jd)
+
+    
     resume_skills = extract_skills(cleaned_resume)
     jd_skills = extract_skills(cleaned_jd)
 
     matched_skills = list(set(resume_skills) & set(jd_skills))
     missing_skills = list(set(jd_skills) - set(resume_skills))
 
-    # Calculate similarity
+    
     score = calculate_similarity(cleaned_resume, cleaned_jd)
 
-    # Learning Recommendations
+    
+    accuracy = calculate_accuracy(matched_skills, jd_skills)
+
     recommendations = {}
     for skill in missing_skills:
         if skill in skill_data:
@@ -79,5 +93,12 @@ def analyze_resume(resume_text, jd_text):
         "missing_skills": missing_skills,
         "recommendations": recommendations,
         "cleaned_resume": cleaned_resume,
-        "cleaned_jd": cleaned_jd
+        "cleaned_jd": cleaned_jd,
+        "resume_skills_count": len(resume_skills),
+        "jd_skills_count": len(jd_skills),
+        "matched_skills_count": len(matched_skills),
+        "missing_skills_count": len(missing_skills),
+        "resume_cleaning_pct": resume_cleaning_pct,
+        "jd_cleaning_pct": jd_cleaning_pct,
+        "accuracy": accuracy
     }

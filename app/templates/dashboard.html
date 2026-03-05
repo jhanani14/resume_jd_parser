@@ -1,70 +1,117 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+{% extends "base.html" %}
 
-<div class="container mt-5">
+{% block title %}Dashboard - Resume JD Matcher{% endblock %}
 
-    <h2 class="mb-4 text-center">Resume vs Job Description Matcher</h2>
+{% block content %}
+<div class="container">
+    
+    <div class="row mb-5">
+        <div class="col-lg-8">
+            <h1 class="mb-2">
+                <i class="fas fa-chart-line me-3" style="color: #2563eb;"></i>Resume & Job Matcher
+            </h1>
+            <p class="lead text-muted">Upload or paste your resume and job description to analyze compatibility</p>
+        </div>
+    </div>
 
     {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     {% endif %}
 
     <form action="/analyze" method="post" enctype="multipart/form-data">
-
         <div class="row">
-
-            <!-- Resume Card -->
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        Resume Input
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-primary">
+                        <i class="fas fa-file-pdf me-2"></i>Resume
                     </div>
                     <div class="card-body">
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-upload me-2" style="color: #2563eb;"></i>Upload Resume
+                            </label>
+                            <div class="input-group">
+                                <input type="file" name="resume_file" class="form-control" accept=".pdf,.docx,.doc,.txt">
+                                <span class="input-group-text bg-light">PDF, DOCX, TXT</span>
+                            </div>
+                            <small class="text-muted d-block mt-2">Max file size: 10MB</small>
+                        </div>
 
-                        <label class="form-label">Upload Resume (PDF, DOCX, TXT)</label>
-                        <input type="file" name="resume_file" class="form-control mb-3">
+                        <div class="text-center my-3">
+                            <p class="text-muted mb-0"><strong>OR</strong></p>
+                        </div>
 
-                        <label class="form-label">OR Paste Resume Text</label>
-                        <textarea name="resume_text" rows="6" class="form-control"></textarea>
-
+                        <div>
+                            <label class="form-label">
+                                <i class="fas fa-paste me-2" style="color: #2563eb;"></i>Paste Resume Text
+                            </label>
+                            <textarea 
+                                name="resume_text" 
+                                rows="8" 
+                                class="form-control" 
+                                placeholder="Paste your resume content here..."></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- JD Card -->
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-success text-white">
-                        Job Description Input
+            
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-success">
+                        <i class="fas fa-briefcase me-2"></i>Job Description
                     </div>
                     <div class="card-body">
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-upload me-2" style="color: #10b981;"></i>Upload Job Description
+                            </label>
+                            <div class="input-group">
+                                <input type="file" name="jd_file" class="form-control" accept=".pdf,.docx,.doc,.txt">
+                                <span class="input-group-text bg-light">PDF, DOCX, TXT</span>
+                            </div>
+                            <small class="text-muted d-block mt-2">Max file size: 10MB</small>
+                        </div>
 
-                        <label class="form-label">Upload JD (PDF, DOCX, TXT)</label>
-                        <input type="file" name="jd_file" class="form-control mb-3">
+                        <div class="text-center my-3">
+                            <p class="text-muted mb-0"><strong>OR</strong></p>
+                        </div>
 
-                        <label class="form-label">OR Paste JD Text</label>
-                        <textarea name="jd_text" rows="6" class="form-control"></textarea>
-
+                        <div>
+                            <label class="form-label">
+                                <i class="fas fa-paste me-2" style="color: #10b981;"></i>Paste Job Description
+                            </label>
+                            <textarea 
+                                name="jd_text" 
+                                rows="8" 
+                                class="form-control" 
+                                placeholder="Paste the job description here..."></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-dark btn-lg">
-                Analyze Resume
-            </button>
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="text-center mt-5 pb-5">
+                    <button 
+                        type="submit" 
+                        class="btn btn-primary btn-lg"
+                        style="padding: 0.875rem 3rem; font-size: 1.1rem;">
+                        <i class="fas fa-magic me-2"></i>Analyze & Compare
+                    </button>
+                    <p class="text-muted mt-3 mb-0">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Our advanced NLP engine will match your skills with job requirements
+                    </p>
+                </div>
+            </div>
         </div>
-
     </form>
-
 </div>
-
-</body>
-</html>
+{% endblock %}

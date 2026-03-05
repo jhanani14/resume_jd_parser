@@ -1,40 +1,198 @@
-# Python cache files
+# ==================== Python ====================
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 
-# Virtual environment
-venv/
-env/
-ENV/
-.venv/
+# C extensions
+*.c
+*.o
 
-# Streamlit
-.streamlit/secrets.toml
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# SQLite database
-*.db
-*.sqlite3
+# PyInstaller
+*.manifest
+*.spec
 
-# Logs
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
 *.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
 
-# OS files
-.DS_Store
-Thumbs.db
+# Flask stuff:
+instance/
+.webassets-cache
 
-# IDE files
-.vscode/
-.idea/
+# Scrapy stuff:
+.scrapy
 
-# Jupyter Notebook checkpoints
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
 .ipynb_checkpoints/
 
-# Uploaded files (if any folder exists)
-uploads/
+# IPython
+profile_default/
+ipython_config.py
 
-# Environment variables
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
 .env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
+# Spyder project settings
+.spyderproject
+.spyProject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# ==================== IDE / Editors ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+.atom/
+.vim/
+
+# ==================== Database ====================
+*.db
+*.sqlite3
+*.sqlite
 instance/
+
+# ==================== Logs ====================
+*.log
+*.log.*
+logs/
+
+# ==================== User Uploads ====================
+uploads/
+downloads/
+tmp/
+temp/
+
+# ==================== OS & System ====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.pem
+*.key
+
+# ==================== Project Specific ====================
+.streamlit/secrets.toml
+*.csv
+*.xlsx
+*.pdf
+.env.local
+.env.*.local
+
+# ==================== Testing ====================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ==================== Build & Dist ====================
+*.whl
+*.tar.gz
+dist/
+build/
+
+# ==================== Node (if using frontend tools) ====================
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ==================== IDE specific ====================
+.code-workspace
+launch.json
+settings.json
+extensions.json
 
